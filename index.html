@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="排班日历">
+    <title>排班日历</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 设置面板 -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-header">
+                <h2>排班设置</h2>
+                <button class="close-btn" onclick="toggleSettings()">✕</button>
+            </div>
+            
+            <div class="settings-content">
+                <div class="setting-group">
+                    <label>上班天数</label>
+                    <div class="number-input">
+                        <button onclick="adjustWork(-1)">−</button>
+                        <input type="number" id="workDays" value="5" min="1" max="30">
+                        <button onclick="adjustWork(1)">+</button>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <label>休息天数</label>
+                    <div class="number-input">
+                        <button onclick="adjustRest(-1)">−</button>
+                        <input type="number" id="restDays" value="2" min="1" max="30">
+                        <button onclick="adjustRest(1)">+</button>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <label>起始日期</label>
+                    <input type="date" id="startDate" class="date-input">
+                </div>
+                
+                <div class="setting-group">
+                    <label>起始日状态</label>
+                    <div class="status-select">
+                        <button class="status-btn active" id="startWork" onclick="setStartStatus('work')">上班</button>
+                        <button class="status-btn" id="startRest" onclick="setStartStatus('rest')">休息</button>
+                    </div>
+                </div>
+                
+                <div class="preview-text" id="cyclePreview">
+                    上 5 天，休 2 天
+                </div>
+                
+                <button class="save-btn" onclick="saveSettings()">保存设置</button>
+            </div>
+        </div>
+        
+        <!-- 日历头部 -->
+        <div class="calendar-header">
+            <button class="nav-btn" onclick="prevMonth()">‹</button>
+            <div class="month-title" onclick="showMonthPicker()">
+                <span id="currentMonth">2026年3月</span>
+            </div>
+            <button class="nav-btn" onclick="nextMonth()">›</button>
+        </div>
+        
+        <!-- 星期标题 -->
+        <div class="weekdays">
+            <div class="weekday">日</div>
+            <div class="weekday">一</div>
+            <div class="weekday">二</div>
+            <div class="weekday">三</div>
+            <div class="weekday">四</div>
+            <div class="weekday">五</div>
+            <div class="weekday">六</div>
+        </div>
+        
+        <!-- 日历网格 -->
+        <div class="calendar-grid" id="calendarGrid">
+            <!-- 动态生成 -->
+        </div>
+        
+        <!-- 底部工具栏 -->
+        <div class="toolbar">
+            <button class="tool-btn" onclick="goToday()">今天</button>
+            <button class="tool-btn primary" onclick="toggleSettings()">设置</button>
+        </div>
+        
+        <!-- 图例 -->
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-dot work"></span>
+                <span>上班</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot rest"></span>
+                <span>休息</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot today"></span>
+                <span>今天</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot override"></span>
+                <span>手动改</span>
+            </div>
+        </div>
+        
+        <!-- 单天修改面板 -->
+        <div class="edit-panel" id="editPanel">
+            <div class="edit-content">
+                <div class="edit-header">
+                    <h3 id="editDate"></h3>
+                    <button class="close-btn small" onclick="closeEditPanel()">✕</button>
+                </div>
+                
+                <div class="edit-buttons">
+                    <button class="edit-btn work" onclick="setDayStatus('work', true)">
+                        <span class="emoji">💼</span> 改为上班
+                    </button>
+                    <button class="edit-btn rest" onclick="setDayStatus('rest', true)">
+                        <span class="emoji">🎉</span> 改为休息
+                    </button>
+                </div>
+                
+                <div class="edit-actions">
+                    <button class="edit-btn reset" onclick="resetDayStatus()">
+                        恢复为自动计算
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

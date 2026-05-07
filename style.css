@@ -1,0 +1,564 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --work-color: #E94560;
+    --rest-color: #52C41A;
+    --today-color: #FF6B6B;
+    --bg-color: #F5F5F7;
+    --card-bg: #FFFFFF;
+    --text-primary: #1D1D1F;
+    --text-secondary: #86868B;
+    --border-color: #E5E5EA;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-color);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    min-height: 100vh;
+}
+
+/* 日历头部 */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    margin-bottom: 16px;
+}
+
+.month-title {
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.month-title:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.nav-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: var(--card-bg);
+    border-radius: 12px;
+    font-size: 24px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+    background: var(--bg-color);
+}
+
+/* 星期标题 */
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 8px;
+}
+
+.weekday {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 8px 0;
+}
+
+/* 日历网格 */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+.day-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.day-cell:hover {
+    background: var(--bg-color);
+}
+
+.day-cell.empty {
+    cursor: default;
+}
+
+.day-cell.empty:hover {
+    background: transparent;
+}
+
+.day-cell .day-number {
+    position: relative;
+    z-index: 1;
+}
+
+.day-cell.work {
+    background: linear-gradient(135deg, #E8F4FD 0%, #D6E9F8 100%);
+    color: var(--work-color);
+}
+
+.day-cell.rest {
+    background: linear-gradient(135deg, #E8F8E8 0%, #D4F0D4 100%);
+    color: var(--rest-color);
+}
+
+.day-cell.today {
+    box-shadow: inset 0 0 0 2px var(--today-color);
+}
+
+.day-cell.today::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    width: 4px;
+    height: 4px;
+    background: var(--today-color);
+    border-radius: 50%;
+}
+
+.day-cell.overridden .day-number::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -6px;
+    width: 6px;
+    height: 6px;
+    background: #FF9500;
+    border-radius: 50%;
+}
+
+/* 底部工具栏 */
+.toolbar {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.tool-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    background: var(--card-bg);
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.tool-btn:active {
+    transform: scale(0.98);
+}
+
+.tool-btn.primary {
+    background: linear-gradient(135deg, #4A90D9 0%, #357ABD 100%);
+    color: white;
+}
+
+/* 图例 */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--card-bg);
+    border-radius: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+}
+
+.legend-dot.work {
+    background: var(--work-color);
+}
+
+.legend-dot.rest {
+    background: var(--rest-color);
+}
+
+.legend-dot.today {
+    background: transparent;
+    box-shadow: inset 0 0 0 2px var(--today-color);
+}
+
+.legend-dot.override {
+    background: #FF9500;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* 设置面板 */
+.settings-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.settings-panel.show {
+    display: flex;
+}
+
+.settings-content {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 480px;
+    border-radius: 20px 20px 0 0;
+    padding: 24px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.settings-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.close-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--bg-color);
+    border-radius: 50%;
+    font-size: 18px;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.setting-group {
+    margin-bottom: 20px;
+}
+
+.setting-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.number-input {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.number-input input {
+    flex: 1;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    outline: none;
+}
+
+.number-input input:focus {
+    border-color: var(--work-color);
+}
+
+.number-input button {
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: var(--bg-color);
+    border-radius: 12px;
+    font-size: 24px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.number-input button:active {
+    transform: scale(0.95);
+    background: var(--border-color);
+}
+
+.date-input {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    outline: none;
+}
+
+.date-input:focus {
+    border-color: var(--work-color);
+}
+
+.status-select {
+    display: flex;
+    gap: 12px;
+}
+
+.status-btn {
+    flex: 1;
+    padding: 14px;
+    border: 2px solid var(--border-color);
+    background: transparent;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.status-btn.active {
+    border-color: var(--work-color);
+    background: #E8F4FD;
+    color: var(--work-color);
+}
+
+.status-btn:last-child.active {
+    border-color: var(--rest-color);
+    background: #E8F8E8;
+    color: var(--rest-color);
+}
+
+.preview-text {
+    text-align: center;
+    padding: 16px;
+    background: var(--bg-color);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.save-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    background: linear-gradient(135deg, #52C41A 0%, #3DA310 100%);
+    color: white;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.save-btn:active {
+    transform: scale(0.98);
+}
+
+/* 响应式 */
+@media (min-width: 768px) {
+    .settings-panel {
+        align-items: center;
+    }
+    
+    .settings-content {
+        border-radius: 20px;
+        margin: 20px;
+    }
+}
+
+/* 单天编辑面板 */
+.edit-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.edit-panel.show {
+    display: flex;
+}
+
+.edit-content {
+    background: var(--card-bg);
+    width: 100%;
+    max-width: 480px;
+    border-radius: 20px 20px 0 0;
+    padding: 24px;
+}
+
+.edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.edit-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close-btn.small {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+}
+
+.edit-buttons {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.edit-btn {
+    flex: 1;
+    padding: 16px;
+    border: 2px solid var(--border-color);
+    background: transparent;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.edit-btn .emoji {
+    font-size: 20px;
+}
+
+.edit-btn.work {
+    border-color: var(--work-color);
+    color: var(--work-color);
+}
+
+.edit-btn.work:active {
+    background: #E8F4FD;
+}
+
+.edit-btn.rest {
+    border-color: var(--rest-color);
+    color: var(--rest-color);
+}
+
+.edit-btn.rest:active {
+    background: #E8F8E8;
+}
+
+.edit-actions {
+    display: flex;
+}
+
+.edit-btn.reset {
+    width: 100%;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 12px;
+}
+
+.edit-btn.reset:active {
+    background: var(--bg-color);
+}
+
+/* 点击提示文字 */
+.day-cell .tap-hint {
+    font-size: 10px;
+    position: absolute;
+    bottom: 4px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+/* 连续天数统计 */
+.stats-bar {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--card-bg);
+    border-radius: 12px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.stat-number.work-num {
+    color: var(--work-color);
+}
+
+.stat-number.rest-num {
+    color: var(--rest-color);
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
